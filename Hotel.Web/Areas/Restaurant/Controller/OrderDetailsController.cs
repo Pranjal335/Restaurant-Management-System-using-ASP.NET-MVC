@@ -23,7 +23,7 @@ namespace Hotel.Web.Areas.Restaurant.Controllers
         // GET: Restaurant/OrderDetails
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.OrderDetails.Include(o => o.Menus).Include(o => o.Orders);
+            var applicationDbContext = _context.OrderDetails.Include(o => o.Customers).Include(o => o.Menus).Include(o => o.Payments);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -36,8 +36,9 @@ namespace Hotel.Web.Areas.Restaurant.Controllers
             }
 
             var orderDetails = await _context.OrderDetails
+                .Include(o => o.Customers)
                 .Include(o => o.Menus)
-                .Include(o => o.Orders)
+                .Include(o => o.Payments)
                 .FirstOrDefaultAsync(m => m.OrderDetailId == id);
             if (orderDetails == null)
             {
@@ -50,8 +51,9 @@ namespace Hotel.Web.Areas.Restaurant.Controllers
         // GET: Restaurant/OrderDetails/Create
         public IActionResult Create()
         {
-            ViewData["DishID"] = new SelectList(_context.Menus, "DishID", "DishName");
-            ViewData["OrderId"] = new SelectList(_context.Orders, "OrderId", "OrderId");
+            ViewData["CustomerId"] = new SelectList(_context.Customers, "CustomerId", "CustomerName");
+            ViewData["DishId"] = new SelectList(_context.Menus, "DishID", "DishName");
+            ViewData["PaymentMethod"] = new SelectList(_context.Payment, "OrderDetailId", "PaymentMethods");
             return View();
         }
 
@@ -60,7 +62,7 @@ namespace Hotel.Web.Areas.Restaurant.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("OrderDetailId,OrderId,DishID,Quantity")] OrderDetails orderDetails)
+        public async Task<IActionResult> Create([Bind("OrderDetailId,CustomerId,DishId,Quantity,PaymentMethod")] OrderDetails orderDetails)
         {
             if (ModelState.IsValid)
             {
@@ -68,8 +70,9 @@ namespace Hotel.Web.Areas.Restaurant.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["DishID"] = new SelectList(_context.Menus, "DishID", "DishName", orderDetails.DishID);
-            ViewData["OrderId"] = new SelectList(_context.Orders, "OrderId", "OrderId", orderDetails.OrderId);
+            ViewData["CustomerId"] = new SelectList(_context.Customers, "CustomerId", "Address", orderDetails.CustomerId);
+            ViewData["DishId"] = new SelectList(_context.Menus, "DishID", "DishName", orderDetails.DishId);
+            ViewData["PaymentMethod"] = new SelectList(_context.Payment, "OrderDetailId", "PaymentMethods", orderDetails.PaymentMethod);
             return View(orderDetails);
         }
 
@@ -86,8 +89,9 @@ namespace Hotel.Web.Areas.Restaurant.Controllers
             {
                 return NotFound();
             }
-            ViewData["DishID"] = new SelectList(_context.Menus, "DishID", "DishName", orderDetails.DishID);
-            ViewData["OrderId"] = new SelectList(_context.Orders, "OrderId", "OrderId", orderDetails.OrderId);
+            ViewData["CustomerId"] = new SelectList(_context.Customers, "CustomerId", "CustomerName", orderDetails.CustomerId);
+            ViewData["DishId"] = new SelectList(_context.Menus, "DishID", "DishName", orderDetails.DishId);
+            ViewData["PaymentMethod"] = new SelectList(_context.Payment, "OrderDetailId", "PaymentMethods", orderDetails.PaymentMethod);
             return View(orderDetails);
         }
 
@@ -96,7 +100,7 @@ namespace Hotel.Web.Areas.Restaurant.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("OrderDetailId,OrderId,DishID,Quantity")] OrderDetails orderDetails)
+        public async Task<IActionResult> Edit(int id, [Bind("OrderDetailId,CustomerId,DishId,Quantity,PaymentMethod")] OrderDetails orderDetails)
         {
             if (id != orderDetails.OrderDetailId)
             {
@@ -123,8 +127,9 @@ namespace Hotel.Web.Areas.Restaurant.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["DishID"] = new SelectList(_context.Menus, "DishID", "DishName", orderDetails.DishID);
-            ViewData["OrderId"] = new SelectList(_context.Orders, "OrderId", "OrderId", orderDetails.OrderId);
+            ViewData["CustomerId"] = new SelectList(_context.Customers, "CustomerId", "Address", orderDetails.CustomerId);
+            ViewData["DishId"] = new SelectList(_context.Menus, "DishID", "DishName", orderDetails.DishId);
+            ViewData["PaymentMethod"] = new SelectList(_context.Payment, "OrderDetailId", "PaymentMethods", orderDetails.PaymentMethod);
             return View(orderDetails);
         }
 
@@ -137,8 +142,9 @@ namespace Hotel.Web.Areas.Restaurant.Controllers
             }
 
             var orderDetails = await _context.OrderDetails
+                .Include(o => o.Customers)
                 .Include(o => o.Menus)
-                .Include(o => o.Orders)
+                .Include(o => o.Payments)
                 .FirstOrDefaultAsync(m => m.OrderDetailId == id);
             if (orderDetails == null)
             {

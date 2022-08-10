@@ -16,6 +16,12 @@
                 @Html.DisplayNameFor(model => model.DishName)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.Quantity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ImageUrl)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.DishPrice)
             </th>
             <th>
@@ -29,6 +35,12 @@
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.DishName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Quantity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ImageUrl)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.DishPrice)

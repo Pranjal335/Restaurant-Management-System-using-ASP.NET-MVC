@@ -11,23 +11,22 @@ using Hotel.Web.Models;
 namespace Hotel.Web.Areas.Restaurant.Controllers
 {
     [Area("Restaurant")]
-    public class OrdersController : Controller
+    public class PaymentsController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public OrdersController(ApplicationDbContext context)
+        public PaymentsController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Restaurant/Orders
+        // GET: Restaurant/Payments
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Orders.Include(o => o.Customers);
-            return View(await applicationDbContext.ToListAsync());
+            return View(await _context.Payment.ToListAsync());
         }
 
-        // GET: Restaurant/Orders/Details/5
+        // GET: Restaurant/Payments/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -35,42 +34,39 @@ namespace Hotel.Web.Areas.Restaurant.Controllers
                 return NotFound();
             }
 
-            var order = await _context.Orders
-                .Include(o => o.Customers)
-                .FirstOrDefaultAsync(m => m.OrderId == id);
-            if (order == null)
+            var payment = await _context.Payment
+                .FirstOrDefaultAsync(m => m.OrderDetailId == id);
+            if (payment == null)
             {
                 return NotFound();
             }
 
-            return View(order);
+            return View(payment);
         }
 
-        // GET: Restaurant/Orders/Create
+        // GET: Restaurant/Payments/Create
         public IActionResult Create()
         {
-            ViewData["CustomerId"] = new SelectList(_context.Customers, "CustomerId", "CustomerName");
             return View();
         }
 
-        // POST: Restaurant/Orders/Create
+        // POST: Restaurant/Payments/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("OrderId,CustomerId")] Order order)
+        public async Task<IActionResult> Create([Bind("OrderDetailId,PaymentMethods")] Payment payment)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(order);
+                _context.Add(payment);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CustomerId"] = new SelectList(_context.Customers, "CustomerId", "CustomerName", order.CustomerId);
-            return View(order);
+            return View(payment);
         }
 
-        // GET: Restaurant/Orders/Edit/5
+        // GET: Restaurant/Payments/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -78,23 +74,22 @@ namespace Hotel.Web.Areas.Restaurant.Controllers
                 return NotFound();
             }
 
-            var order = await _context.Orders.FindAsync(id);
-            if (order == null)
+            var payment = await _context.Payment.FindAsync(id);
+            if (payment == null)
             {
                 return NotFound();
             }
-            ViewData["CustomerId"] = new SelectList(_context.Customers, "CustomerId", "CustomerName", order.CustomerId);
-            return View(order);
+            return View(payment);
         }
 
-        // POST: Restaurant/Orders/Edit/5
+        // POST: Restaurant/Payments/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("OrderId,CustomerId")] Order order)
+        public async Task<IActionResult> Edit(int id, [Bind("OrderDetailId,PaymentMethods")] Payment payment)
         {
-            if (id != order.OrderId)
+            if (id != payment.OrderDetailId)
             {
                 return NotFound();
             }
@@ -103,12 +98,12 @@ namespace Hotel.Web.Areas.Restaurant.Controllers
             {
                 try
                 {
-                    _context.Update(order);
+                    _context.Update(payment);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!OrderExists(order.OrderId))
+                    if (!PaymentExists(payment.OrderDetailId))
                     {
                         return NotFound();
                     }
@@ -119,11 +114,10 @@ namespace Hotel.Web.Areas.Restaurant.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CustomerId"] = new SelectList(_context.Customers, "CustomerId", "CustomerName", order.CustomerId);
-            return View(order);
+            return View(payment);
         }
 
-        // GET: Restaurant/Orders/Delete/5
+        // GET: Restaurant/Payments/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -131,31 +125,30 @@ namespace Hotel.Web.Areas.Restaurant.Controllers
                 return NotFound();
             }
 
-            var order = await _context.Orders
-                .Include(o => o.Customers)
-                .FirstOrDefaultAsync(m => m.OrderId == id);
-            if (order == null)
+            var payment = await _context.Payment
+                .FirstOrDefaultAsync(m => m.OrderDetailId == id);
+            if (payment == null)
             {
                 return NotFound();
             }
 
-            return View(order);
+            return View(payment);
         }
 
-        // POST: Restaurant/Orders/Delete/5
+        // POST: Restaurant/Payments/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var order = await _context.Orders.FindAsync(id);
-            _context.Orders.Remove(order);
+            var payment = await _context.Payment.FindAsync(id);
+            _context.Payment.Remove(payment);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool OrderExists(int id)
+        private bool PaymentExists(int id)
         {
-            return _context.Orders.Any(e => e.OrderId == id);
+            return _context.Payment.Any(e => e.OrderDetailId == id);
         }
     }
 }

@@ -58,7 +58,7 @@ namespace Hotel.Web.Areas.Restaurant.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("DishID,DishName,DishPrice,CategoryId")] Menu menu)
+        public async Task<IActionResult> Create([Bind("DishID,DishName,Quantity,ImageUrl,DishPrice,CategoryId")] Menu menu)
         {
             if (ModelState.IsValid)
             {
@@ -92,7 +92,7 @@ namespace Hotel.Web.Areas.Restaurant.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("DishID,DishName,DishPrice,CategoryId")] Menu menu)
+        public async Task<IActionResult> Edit(int id, [Bind("DishID,DishName,Quantity,ImageUrl,DishPrice,CategoryId")] Menu menu)
         {
             if (id != menu.DishID)
             {

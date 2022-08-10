@@ -59,9 +59,20 @@ namespace Hotel.Web.Areas.Restaurant.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(category);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                category.CategoryName = category.CategoryName.Trim();
+
+                bool isDuplicateFound
+                   = _context.Categories.Any(c => c.CategoryName == category.CategoryName);
+                if (isDuplicateFound)
+                {
+                    ModelState.AddModelError("CategoryName", "Duplicate! Another category with same name exists");
+                }
+                else
+                {
+                    _context.Add(category);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
             }
             return View(category);
         }
@@ -96,23 +107,39 @@ namespace Hotel.Web.Areas.Restaurant.Controllers
 
             if (ModelState.IsValid)
             {
-                try
+                // Sanitize the data before consumption
+                category.CategoryName = category.CategoryName.Trim();
+
+                // Check for duplicate Category
+                bool isDuplicateFound
+                    = _context.Categories.Any(c => c.CategoryName == category.CategoryName
+                                                   && c.CategoryId != category.CategoryId);
+                if (isDuplicateFound)
                 {
-                    _context.Update(category);
-                    await _context.SaveChangesAsync();
+                    ModelState.AddModelError("CategoryName", "A Duplicate Category was found!");
                 }
-                catch (DbUpdateConcurrencyException)
+                else
                 {
-                    if (!CategoryExists(category.CategoryId))
+                    try
                     {
-                        return NotFound();
+                        // Save the changes to the database.
+                        _context.Update(category);
+                        await _context.SaveChangesAsync();
+
+                        return RedirectToAction(nameof(Index));
                     }
-                    else
+                    catch (DbUpdateConcurrencyException)
                     {
-                        throw;
+                        if (!CategoryExists(category.CategoryId))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
             return View(category);
         }

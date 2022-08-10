@@ -12,7 +12,9 @@ namespace Hotel.Web.Migrations
                 {
                     CustomerId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CustomerName = table.Column<string>(nullable: false)
+                    CustomerName = table.Column<string>(type: "varchar(50)", nullable: false),
+                    Address = table.Column<string>(type: "varchar(100)", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "varchar(50)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -25,7 +27,7 @@ namespace Hotel.Web.Migrations
                 {
                     CategoryId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CategoryName = table.Column<string>(nullable: false)
+                    CategoryName = table.Column<string>(type: "varchar(50)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -33,22 +35,16 @@ namespace Hotel.Web.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Orders",
+                name: "Payments",
                 columns: table => new
                 {
-                    OrderId = table.Column<int>(nullable: false)
+                    OrderDetailId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CustomerId = table.Column<int>(nullable: false)
+                    PaymentMethods = table.Column<string>(type: "varchar(50)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Orders", x => x.OrderId);
-                    table.ForeignKey(
-                        name: "FK_Orders_Customers_CustomerId",
-                        column: x => x.CustomerId,
-                        principalTable: "Customers",
-                        principalColumn: "CustomerId",
-                        onDelete: ReferentialAction.Cascade);
+                    table.PrimaryKey("PK_Payments", x => x.OrderDetailId);
                 });
 
             migrationBuilder.CreateTable(
@@ -57,8 +53,10 @@ namespace Hotel.Web.Migrations
                 {
                     DishID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    DishName = table.Column<string>(nullable: false),
-                    DishPrice = table.Column<string>(nullable: false),
+                    DishName = table.Column<string>(type: "varchar(50)", nullable: false),
+                    Quantity = table.Column<short>(nullable: false),
+                    ImageUrl = table.Column<string>(maxLength: 120, nullable: true),
+                    DishPrice = table.Column<string>(type: "varchar(50)", nullable: false),
                     CategoryId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -78,24 +76,31 @@ namespace Hotel.Web.Migrations
                 {
                     OrderDetailId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    OrderId = table.Column<int>(nullable: false),
-                    DishID = table.Column<int>(nullable: false),
-                    Quantity = table.Column<int>(nullable: false)
+                    CustomerId = table.Column<int>(nullable: false),
+                    DishId = table.Column<int>(nullable: false),
+                    Quantity = table.Column<int>(nullable: false),
+                    PaymentMethod = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_OrderDetails", x => x.OrderDetailId);
                     table.ForeignKey(
-                        name: "FK_OrderDetails_Menu_DishID",
-                        column: x => x.DishID,
+                        name: "FK_OrderDetails_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "CustomerId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_OrderDetails_Menu_DishId",
+                        column: x => x.DishId,
                         principalTable: "Menu",
                         principalColumn: "DishID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_OrderDetails_Orders_OrderId",
-                        column: x => x.OrderId,
-                        principalTable: "Orders",
-                        principalColumn: "OrderId",
+                        name: "FK_OrderDetails_Payments_PaymentMethod",
+                        column: x => x.PaymentMethod,
+                        principalTable: "Payments",
+                        principalColumn: "OrderDetailId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -105,19 +110,19 @@ namespace Hotel.Web.Migrations
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderDetails_DishID",
+                name: "IX_OrderDetails_CustomerId",
                 table: "OrderDetails",
-                column: "DishID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_OrderDetails_OrderId",
-                table: "OrderDetails",
-                column: "OrderId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Orders_CustomerId",
-                table: "Orders",
                 column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderDetails_DishId",
+                table: "OrderDetails",
+                column: "DishId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderDetails_PaymentMethod",
+                table: "OrderDetails",
+                column: "PaymentMethod");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -126,16 +131,16 @@ namespace Hotel.Web.Migrations
                 name: "OrderDetails");
 
             migrationBuilder.DropTable(
+                name: "Customers");
+
+            migrationBuilder.DropTable(
                 name: "Menu");
 
             migrationBuilder.DropTable(
-                name: "Orders");
+                name: "Payments");
 
             migrationBuilder.DropTable(
                 name: "DishCategory");
-
-            migrationBuilder.DropTable(
-                name: "Customers");
         }
     }
 }

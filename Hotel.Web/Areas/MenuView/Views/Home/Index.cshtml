@@ -1,0 +1,61 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using Hotel.Web.Areas.MenuView.ViewModels
+@model ShowMenuViewModel
+@{
+}
+
+<h1>The Menu</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="CategoryId" class="control-label"></label>
+                <select asp-for="CategoryId" class ="form-control" asp-items="ViewBag.CategoryId"></select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Get items</button>
+        </form>
+    </div>
+</div>
+
+@if(Model != null && Model.MenuItems != null)
+{
+    <form method="post">
+        <div class="card-columns mt-3">
+            @foreach(var item in Model.MenuItems) 
+            {
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-title"> @item.DishName </div>
+                        
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-sm btn-primary" type="submit"
+                                asp-area="Menu" asp-controller="Home" 
+                                asp-action="AddToCart" asp-route-id="@item.DishID">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+    </form>
+}
+
+
+@section HeadScripts {
+    <style>
+        h1 {
+            color: darkgreen;
+            text-align: center;
+            font-family: 'Brush Script MT', Arial;
+            font-size: 3rem;
+            font-weight: bold;
+        }
+    </style>
+}

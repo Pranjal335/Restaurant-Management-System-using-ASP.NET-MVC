@@ -27,7 +27,7 @@ namespace Hotel.Web.Migrations
 
                     b.Property<string>("CategoryName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(50)");
 
                     b.HasKey("CategoryId");
 
@@ -41,9 +41,17 @@ namespace Hotel.Web.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("varchar(100)");
+
                     b.Property<string>("CustomerName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("varchar(50)");
 
                     b.HasKey("CustomerId");
 
@@ -62,34 +70,24 @@ namespace Hotel.Web.Migrations
 
                     b.Property<string>("DishName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(50)");
 
                     b.Property<string>("DishPrice")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(120)")
+                        .HasMaxLength(120);
+
+                    b.Property<short>("Quantity")
+                        .HasColumnType("smallint");
 
                     b.HasKey("DishID");
 
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Menu");
-                });
-
-            modelBuilder.Entity("Hotel.Web.Models.Order", b =>
-                {
-                    b.Property<int>("OrderId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("CustomerId")
-                        .HasColumnType("int");
-
-                    b.HasKey("OrderId");
-
-                    b.HasIndex("CustomerId");
-
-                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("Hotel.Web.Models.OrderDetails", b =>
@@ -99,10 +97,13 @@ namespace Hotel.Web.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("DishID")
+                    b.Property<int>("CustomerId")
                         .HasColumnType("int");
 
-                    b.Property<int>("OrderId")
+                    b.Property<int>("DishId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PaymentMethod")
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
@@ -110,11 +111,29 @@ namespace Hotel.Web.Migrations
 
                     b.HasKey("OrderDetailId");
 
-                    b.HasIndex("DishID");
+                    b.HasIndex("CustomerId");
 
-                    b.HasIndex("OrderId");
+                    b.HasIndex("DishId");
+
+                    b.HasIndex("PaymentMethod");
 
                     b.ToTable("OrderDetails");
+                });
+
+            modelBuilder.Entity("Hotel.Web.Models.Payment", b =>
+                {
+                    b.Property<int>("OrderDetailId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("PaymentMethods")
+                        .IsRequired()
+                        .HasColumnType("varchar(50)");
+
+                    b.HasKey("OrderDetailId");
+
+                    b.ToTable("Payments");
                 });
 
             modelBuilder.Entity("Hotel.Web.Models.Menu", b =>
@@ -126,26 +145,23 @@ namespace Hotel.Web.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Hotel.Web.Models.Order", b =>
+            modelBuilder.Entity("Hotel.Web.Models.OrderDetails", b =>
                 {
                     b.HasOne("Hotel.Web.Models.Customer", "Customers")
-                        .WithMany("Order")
+                        .WithMany("OrderDetails")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
 
-            modelBuilder.Entity("Hotel.Web.Models.OrderDetails", b =>
-                {
                     b.HasOne("Hotel.Web.Models.Menu", "Menus")
                         .WithMany("OrderDetails")
-                        .HasForeignKey("DishID")
+                        .HasForeignKey("DishId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Hotel.Web.Models.Order", "Orders")
+                    b.HasOne("Hotel.Web.Models.Payment", "Payments")
                         .WithMany("OrderDetails")
-                        .HasForeignKey("OrderId")
+                        .HasForeignKey("PaymentMethod")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

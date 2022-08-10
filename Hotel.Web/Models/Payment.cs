@@ -5,36 +5,22 @@ using Hotel.Web.Models;
 
 namespace Hotel.Web.Models
 {
-
-    [Table(name: "Orders")]
-    public class Order
+    [Table(name:"Payments")]
+    public class Payment
     {
-
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-
-        public int OrderId { get; set; }
-
+        public int OrderDetailId { get; set; }
 
 
-        #region 
-
-        public int CustomerId { get; set; }
-
-        [ForeignKey(nameof(Order.CustomerId))]
-
-        public Customer Customers { get; set; }
-
-        #endregion
+        [Required(ErrorMessage = "{0} cannot be empty!")]
+        [Column(TypeName = "varchar(50)")]
+        [Display(Name = "Payment Methods")]
+        public string PaymentMethods { get; set; }
 
         #region Navigation Properties to the OrderDetails Model
         public ICollection<OrderDetails> OrderDetails { get; set; }
-
         #endregion
-
-
-
-
 
     }
 }

@@ -11,24 +11,27 @@ namespace Hotel.Web.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-
         public int OrderDetailId { get; set; }
 
-        #region
-        public int OrderId { get; set; }
 
-        [ForeignKey(nameof(OrderDetails.OrderId))]
 
-        public Order Orders { get; set; }
+        #region Navigation Properties to the Customer Model
+        [Display(Name = "Customer Name")]
+        public int CustomerId { get; set; }
+
+        [ForeignKey(nameof(OrderDetails.CustomerId))]
+
+        public Customer Customers { get; set; }
 
         #endregion
 
 
-        #region 
+        #region Navigation Properties to the Menu Model
 
-        public int DishID { get; set; }
+        [Display(Name = "Name of the Dish")]
+        public int DishId { get; set; }
 
-        [ForeignKey(nameof(OrderDetails.DishID))]
+        [ForeignKey(nameof(OrderDetails.DishId))]
 
         public Menu Menus { get; set; }
 
@@ -36,7 +39,13 @@ namespace Hotel.Web.Models
 
         public int Quantity { get; set; }
 
-        
+        #region Navigation Properties to the Payment Model
+        [Display(Name = "Payment Options")]
+        public int PaymentMethod { get; set; }
+        [ForeignKey(nameof(OrderDetails.PaymentMethod))]
+        public Payment Payments { get; set; }
 
+
+        #endregion
     }
 }

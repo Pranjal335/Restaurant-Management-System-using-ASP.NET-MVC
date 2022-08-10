@@ -9,10 +9,14 @@ namespace Hotel.Web.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-
+        [Display(Name = "Category ID")]
         public int CategoryId { get; set; }
 
-        [Required]
+
+        [Required(ErrorMessage = "{0} cannot be empty!")]
+        [Column(TypeName = "varchar(50)")]
+        [Display(Name = "Name of the Category")]
+
         public string CategoryName { get; set; }
 
         #region Navigation Properties to the Menu Model

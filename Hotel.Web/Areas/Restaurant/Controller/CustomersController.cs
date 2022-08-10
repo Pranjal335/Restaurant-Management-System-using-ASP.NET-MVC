@@ -55,7 +55,7 @@ namespace Hotel.Web.Areas.Restaurant.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CustomerId,CustomerName")] Customer customer)
+        public async Task<IActionResult> Create([Bind("CustomerId,CustomerName,Address,PhoneNumber")] Customer customer)
         {
             if (ModelState.IsValid)
             {
@@ -87,7 +87,7 @@ namespace Hotel.Web.Areas.Restaurant.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CustomerId,CustomerName")] Customer customer)
+        public async Task<IActionResult> Edit(int id, [Bind("CustomerId,CustomerName,Address,PhoneNumber")] Customer customer)
         {
             if (id != customer.CustomerId)
             {

@@ -6,16 +6,23 @@
     <title>@ViewData["Title"] - Hotel.Web</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+
+      @RenderSection("HeadScripts", required: false)
+
 </head>
-<body>
+<body style="background-color:antiquewhite;  background-repeat: no-repeat; background-image:url('p.jpg') ; background-size:100%; 
+  background-attachment: fixed;">
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
+
+       
+            <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3 ">
+            
                 <a class="navbar-brand" asp-area="" asp-page="/Index">Hotel.Web</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
@@ -24,12 +31,42 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
                         </li>
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">Manage</a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item"
+                                   asp-area="Restaurant" asp-controller="Categories" asp-action="Index">Categories</a>
+                                <a class="dropdown-item"
+                                   asp-area="Restaurant" asp-controller="Menus" asp-action="Index">Menu</a>
+                                <a class="dropdown-item"
+                                   asp-area="Restaurant" asp-controller="Payments" asp-action="Index">Set Payment</a>
+                                <a class="dropdown-item"
+                                   asp-area="Restaurant" asp-controller="Customers" asp-action="Index">Customer</a>
+                                <a class="dropdown-item"
+                                   asp-area="Restaurant" asp-controller="OrderDetails" asp-action="Create">Place Order</a>
+
+                            </div>
+
+                        </li>
+
                     </ul>
                 </div>
-            </div>
+
+                <form class="form-inline">
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                </form>
+          
         </nav>
+  
+
+
+        
+
+
     </header>
-    <div class="container">
+    <div class="container" >
         <main role="main" class="pb-3">
             @RenderBody()
         </main>

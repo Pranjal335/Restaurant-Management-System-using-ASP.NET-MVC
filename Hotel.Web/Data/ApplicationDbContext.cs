@@ -11,7 +11,7 @@ namespace Hotel.Web.Data
 
         public DbSet<Category> Categories { get; set; }
 
-        public DbSet<Order> Orders { get; set; }
+       
 
         public DbSet<Menu> Menus { get; set; }
 
@@ -21,6 +21,9 @@ namespace Hotel.Web.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         { }
+
+
+        public DbSet<Hotel.Web.Models.Payment> Payment { get; set; }
 
     }
 }
